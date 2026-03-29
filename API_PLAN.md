@@ -1,34 +1,69 @@
-# Comment Analyze API Plan
+# Analyze Comments API Plan
 
-## Current status (this round)
-- `POST /api/analyze-comments` is implemented with mock logic.
-- Input and output contracts are already stable enough for model replacement.
-- Frontend debug call path is wired in school detail page.
+## Current status
+- `/api/analyze-comments` is now connected to a real SCNet model through OpenAI Node SDK.
+- The route still keeps the same request shape and response contract used by the frontend debug panel.
+- The API is specialized for comment analysis, not a generic chat assistant.
 
-## What to replace for real model integration
-1. Keep `src/app/api/analyze-comments/route.ts` as the API entry.
-2. Replace only the internal mock analyzer function (`analyzeCommentsMock`) with a real LLM caller.
-3. Keep request validation and response shape unchanged to avoid frontend rewrites.
+## Runtime environment variables
+Required:
+- `SCNET_API_KEY`
+- `SCNET_MODEL`
 
-## Suggested environment variables (future)
-- `OPENAI_API_KEY`: model provider key.
-- `OPENAI_BASE_URL` (optional): custom gateway or proxy endpoint.
-- `ANALYZE_COMMENTS_MODEL`: model id for comment analysis.
-- `ANALYZE_COMMENTS_TIMEOUT_MS` (optional): request timeout budget.
+Optional:
+- `SCNET_BASE_URL` (default: `https://api.scnet.cn/api/llm/v1`)
 
-## Frontend impact
-- Current frontend only calls `/api/analyze-comments`.
-- After model integration, frontend call layer can remain unchanged unless:
-  - you add streaming responses,
-  - you add async job mode,
-  - or you split analysis into multi-step review endpoints.
+## Local development setup
+1. Create `.env.local` in project root.
+2. Configure:
+   - `SCNET_API_KEY=...`
+   - `SCNET_MODEL=...`
+   - `SCNET_BASE_URL=https://api.scnet.cn/api/llm/v1` (or your provider-required variant)
+3. Start app normally (`npm run dev`).
 
-## Why analyze-comments first, then recommend-schools
-1. `analyze-comments` creates the core evidence layer (summary, sentiment, insights, evidence selection, confidence).
-2. Recommendation quality depends on evidence quality and taxonomy consistency.
-3. Building recommendation first risks “opinion-first, evidence-later” drift and weak explainability.
+## Vercel deployment setup
+1. In Vercel Project Settings -> Environment Variables, add:
+   - `SCNET_API_KEY`
+   - `SCNET_MODEL`
+   - `SCNET_BASE_URL` (recommended explicit value)
+2. Redeploy after saving variables.
 
-## Guardrails before real model
-- Keep `moduleType` and `taxonomyKey` mapping one-to-one.
-- Keep `structuredFacts.key` stable across schools.
-- If model proposes new keys, return them as warnings first instead of writing directly into production data.
+## BaseURL path troubleshooting (OpenAI SDK + SCNet)
+Default implementation uses:
+- `baseURL = https://api.scnet.cn/api/llm/v1`
+
+If API returns 404/405 or path mismatch errors:
+1. Keep SDK call as `chat.completions.create(...)`.
+2. Adjust only `SCNET_BASE_URL`:
+   - Try `https://api.scnet.cn/api/llm/v1`
+   - If provider already appends `/v1`, try `https://api.scnet.cn/api/llm`
+3. Do not hardcode paths in source code; use env config for compatibility.
+
+## Prompt and contract constraints
+System/User prompt enforce:
+- focus on student lived experience and制度体感
+- do not shift focus to保研率/就业率/学科排名
+- return strict JSON only
+- selected evidence must be directly quoted from input comments
+
+The response contract remains:
+- `moduleSummary`
+- `sentiment`
+- `keyInsights`
+- `suitableFor`
+- `notSuitableFor`
+- `selectedEvidence`
+- `confidence`
+
+## Where to switch model in future
+Only these knobs are needed:
+1. `SCNET_MODEL` value
+2. `SCNET_BASE_URL` value (if provider gateway changes)
+3. Internal prompt wording in `src/app/api/analyze-comments/route.ts`
+
+Frontend call path (`/api/analyze-comments`) can stay unchanged.
+
+## Why analyze-comments before recommend-schools
+1. Recommendation quality depends on stable evidence extraction.
+2. Analyze layer gives explainable outputs (summary, evidence, confidence).
+3. Doing recommendation first risks weak explainability and schema drift.
