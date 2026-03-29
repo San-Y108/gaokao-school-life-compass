@@ -127,6 +127,12 @@ export const schools: School[] = [
             value: '低频',
             displayValue: '低频，以安全巡查为主',
           },
+          {
+            key: 'pe-requirement-level',
+            label: '体育要求',
+            value: 'medium',
+            displayValue: '中等，达标导向为主',
+          },
         ],
         evidences: [
           {
@@ -337,6 +343,12 @@ export const schools: School[] = [
             label: '查寝严格度',
             value: 'medium',
             displayValue: '中等',
+          },
+          {
+            key: 'dorm-check-frequency',
+            label: '查寝频率',
+            value: '中频',
+            displayValue: '中频，关键节点更明显',
           },
           {
             key: 'pe-requirement-level',
@@ -559,6 +571,12 @@ export const schools: School[] = [
             label: '查寝频率',
             value: '较频繁',
             displayValue: '较频繁',
+          },
+          {
+            key: 'pe-requirement-level',
+            label: '体育要求',
+            value: 'medium',
+            displayValue: '中等，达标导向为主',
           },
         ],
         evidences: [

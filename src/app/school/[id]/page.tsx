@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import CommentAnalysisDebugPanel from '@/components/CommentAnalysisDebugPanel';
 import ExperienceModuleCard from '@/components/ExperienceModuleCard';
 import { schools } from '@/data/schools';
 import { useCompare } from '@/lib/useCompare';
@@ -114,6 +115,8 @@ const SchoolDetailPage: React.FC = () => {
             <ExperienceModuleCard key={module.id} module={module} />
           ))}
         </div>
+
+        <CommentAnalysisDebugPanel school={school} />
 
         <section className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mt-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-3">样本说明</h2>
