@@ -4,6 +4,8 @@
 - `/api/analyze-comments` is now connected to a real SCNet model through OpenAI Node SDK.
 - The route still keeps the same request shape and response contract used by the frontend debug panel.
 - The API is specialized for comment analysis, not a generic chat assistant.
+- School detail page has formal module-level analysis entry (not only debug panel).
+- Each module can trigger analysis on demand and display stable result/status UI.
 
 ## Runtime environment variables
 Required:
@@ -54,6 +56,40 @@ The response contract remains:
 - `notSuitableFor`
 - `selectedEvidence`
 - `confidence`
+
+## Detail page formal flow
+1. User opens a school detail page and reads static module evidence first.
+2. For a module, user clicks `生成分析` to call `POST /api/analyze-comments`.
+3. Frontend renders states explicitly: empty / loading / success / error / retry.
+4. On success, the module shows:
+   - summary + sentiment + confidence
+   - key insights
+   - suitable / not suitable audience hints
+   - selected evidence list
+5. Existing debug panel is kept as a collapsed secondary entry for dev verification.
+
+## Frontend cache strategy
+- Cache layer: `sessionStorage` only (lightweight, per browser session).
+- Cache key:
+  - `school-comment-analysis:v1:${schoolId}:${moduleType}`
+- Cache payload includes:
+  - `commentsSignature` (derived from module evidence quotes)
+  - `updatedAt`
+  - `result` (full API response)
+- If module evidence changed and signature mismatch happens, cached result is ignored.
+
+## When users should re-run analysis
+- A module result is old and user wants a fresh run after new comments are added.
+- User sees low confidence (`level = low` or low score).
+- Evidence matching hint shows partial mismatch (possible drift in generated quotes).
+- Previous refresh failed and page is showing last cached successful result.
+
+## Low-confidence explanation
+- Low confidence usually means one or more of:
+  - comment sample is too small
+  - positive/negative signals are highly conflicting
+  - evidence coverage is weak
+- UI should explicitly mark low-confidence result as reference-only, not final judgment.
 
 ## Where to switch model in future
 Only these knobs are needed:

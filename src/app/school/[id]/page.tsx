@@ -112,11 +112,21 @@ const SchoolDetailPage: React.FC = () => {
 
         <div className="space-y-6">
           {school.experienceModules.map((module) => (
-            <ExperienceModuleCard key={module.id} module={module} />
+            <ExperienceModuleCard key={module.id} schoolId={school.basic.id} module={module} />
           ))}
         </div>
 
-        <CommentAnalysisDebugPanel school={school} />
+        <section className="mt-8">
+          <details className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+            <summary className="cursor-pointer select-none text-sm font-medium text-gray-700">
+              开发调试入口（可选，默认折叠）
+            </summary>
+            <p className="mt-2 text-xs text-gray-500">
+              正式用户视图已在各模块内提供评论分析能力，此处仅用于开发联调与回归测试。
+            </p>
+            <CommentAnalysisDebugPanel school={school} />
+          </details>
+        </section>
 
         <section className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mt-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-3">样本说明</h2>

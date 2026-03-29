@@ -1,7 +1,9 @@
 import { ExperienceModule } from '@/types/school';
 import { getCredibilityText, getModuleTypeText, getSentimentText } from '@/lib/school-helpers';
+import ModuleCommentAnalysisSection from '@/components/ModuleCommentAnalysisSection';
 
 interface ExperienceModuleCardProps {
+  schoolId: string;
   module: ExperienceModule;
 }
 
@@ -11,7 +13,7 @@ const sentimentClassNameMap: Record<ExperienceModule['sentiment'], string> = {
   negative: 'bg-rose-50 text-rose-700 border border-rose-100',
 };
 
-const ExperienceModuleCard: React.FC<ExperienceModuleCardProps> = ({ module }) => {
+const ExperienceModuleCard: React.FC<ExperienceModuleCardProps> = ({ schoolId, module }) => {
   return (
     <section className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
       <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
@@ -75,6 +77,8 @@ const ExperienceModuleCard: React.FC<ExperienceModuleCardProps> = ({ module }) =
           ))}
         </div>
       </div>
+
+      <ModuleCommentAnalysisSection schoolId={schoolId} module={module} />
     </section>
   );
 };

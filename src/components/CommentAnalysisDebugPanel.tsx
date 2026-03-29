@@ -87,10 +87,10 @@ const CommentAnalysisDebugPanel: React.FC<CommentAnalysisDebugPanelProps> = ({ s
   };
 
   return (
-    <section className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mt-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-2">评论分析调试（最小闭环）</h2>
+    <section className="rounded-xl border border-gray-200 bg-gray-50 p-5 mt-4">
+      <h2 className="text-base font-semibold text-gray-900 mb-2">开发调试：评论分析接口联调</h2>
       <p className="text-sm text-gray-600 mb-4">
-        用于验证 `POST /api/analyze-comments` 链路。当前返回为 mock 分析结果，后续可替换成真实模型调用。
+        用于验证 `POST /api/analyze-comments` 链路，正式用户建议优先使用上方模块内的分析区。
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
