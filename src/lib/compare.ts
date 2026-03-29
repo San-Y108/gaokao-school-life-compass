@@ -1,5 +1,3 @@
-import { School } from '@/types/school';
-
 export type CompareState = {
   schoolIds: string[];
 };

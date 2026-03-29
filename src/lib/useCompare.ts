@@ -1,14 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { CompareState, addToCompare, removeFromCompare, clearCompare, getInitialState } from '@/lib/compare';
 
 export const useCompare = () => {
   const [compareState, setCompareState] = useState<CompareState>(getInitialState());
-
-  // 从 localStorage 加载状态
-  useEffect(() => {
-    const initialState = getInitialState();
-    setCompareState(initialState);
-  }, []);
 
   const handleAddToCompare = useCallback((schoolId: string) => {
     setCompareState((prev) => addToCompare(prev, schoolId));
@@ -19,7 +13,7 @@ export const useCompare = () => {
   }, []);
 
   const handleClearCompare = useCallback(() => {
-    setCompareState((prev) => clearCompare());
+    setCompareState(clearCompare());
   }, []);
 
   return {

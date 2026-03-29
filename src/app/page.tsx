@@ -21,7 +21,6 @@ export default function Home() {
 
   // 检查是否达到对比上限
   const isCompareFull = compareState.schoolIds.length >= 3;
-  const compareCount = compareState.schoolIds.length;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -35,10 +34,9 @@ export default function Home() {
             基于真实校园生活体验的高校选择工具
           </h2>
           <p className="text-gray-500 max-w-3xl mb-4">
-            这不是传统就业率导向的选校工具。我们专注于帮助学生了解高校的
-            <span className="font-medium">真实生活制度与学生体感</span>，
-            从早自习、晚自习、学习压力、管理严格度等维度，
-            找到最适合自己生活偏好与承压能力的高校。
+            这不是传统就业率导向的选校工具。我们开始把高校信息重构为
+            <span className="font-medium">学生评论证据驱动</span>
+            的模块化档案，用评论摘要、结构化事实和证据片段来帮助你判断真实校园体验。
           </p>
           <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3 text-sm text-yellow-800">
             <span className="font-semibold">温馨提示：</span>
@@ -87,10 +85,10 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredSchools.map((school) => (
               <SchoolCard 
-                key={school.id} 
+                key={school.basic.id} 
                 school={school} 
                 onAddToCompare={addToCompare}
-                isAddedToCompare={compareState.schoolIds.includes(school.id)}
+                isAddedToCompare={compareState.schoolIds.includes(school.basic.id)}
                 isCompareFull={isCompareFull}
               />
             ))}
